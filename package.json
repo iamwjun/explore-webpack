@@ -23,6 +23,9 @@
   "devDependencies": {
     "acorn": "^8.8.2",
     "acorn-walk": "^8.2.0",
+    "loader-utils": "^3.2.1",
+    "schema-utils": "^4.0.0",
+    "ts-loader": "^9.4.2",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1"

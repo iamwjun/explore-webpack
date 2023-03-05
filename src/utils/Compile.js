@@ -1,4 +1,8 @@
 class Compile {
+  // a: string;
+  // b: string;
+  // c: string;
+
   constructor(a, b, c) {
     this.a = a;
     this.b = b;

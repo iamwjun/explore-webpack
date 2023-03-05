@@ -27,7 +27,7 @@ class WidgetsPlugin {
                 NewExpression(node) {
                   // 在NewExpression的arguments数组中添加一个新参数
                   node.arguments = [node.arguments[1]];
-                  console.log("node", node);
+                  //  console.log("node", node);
                 },
               });
               // console.log('code', generate(expression).code);
