@@ -1,0 +1,30 @@
+{
+  "name": "explore-webpack",
+  "version": "1.0.0",
+  "description": "wepback",
+  "main": "index.js",
+  "scripts": {
+    "buid": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iamwjun/explore-webpack.git"
+  },
+  "keywords": [
+    "webpack"
+  ],
+  "author": "iamwjun",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iamwjun/explore-webpack/issues"
+  },
+  "homepage": "https://github.com/iamwjun/explore-webpack#readme",
+  "devDependencies": {
+    "acorn": "^8.8.2",
+    "acorn-walk": "^8.2.0",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.11.1"
+  }
+}
