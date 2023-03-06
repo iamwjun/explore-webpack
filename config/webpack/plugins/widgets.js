@@ -3,6 +3,9 @@ const walk = require("acorn-walk");
 const NullFactory = require("webpack/lib/NullFactory");
 const ConstDependency = require("webpack/lib/dependencies/ConstDependency");
 
+/**
+ * use acorn modify webpack ast
+ */
 class WidgetsPlugin {
   apply(compiler) {
     compiler.hooks.compilation.tap(
