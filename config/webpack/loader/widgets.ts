@@ -57,7 +57,6 @@ const transpileFactory = (context: ts.TransformationContext): ts.Transformer<any
     function visitNode(node) {
       if (ts.isClassDeclaration(node)) {
         const constructor = node.members.find(ts.isConstructorDeclaration);
-        console.log(constructor);
         if (constructor) {
           const assignment = constructor.body?.statements.find(
             ts.isExpressionStatement
@@ -194,7 +193,7 @@ module.exports = function (source, map) {
   const options = this.getOptions();
 
   validate(schema, options, {
-    name: "My Custom Loader",
+    name: "Widgets Loader",
     baseDataPath: "options",
   });
 
