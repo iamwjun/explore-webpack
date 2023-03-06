@@ -21,7 +21,7 @@ module.exports = {
         test: /\.js$/,
         use: [
           {
-            loader: require.resolve("./config/webpack/loader/compile"),
+            loader: require.resolve("./config/webpack/loader/widgets"),
             options: {
               name: "myVariable",
               value: "Hello, World!",
