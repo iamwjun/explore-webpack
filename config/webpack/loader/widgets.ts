@@ -191,6 +191,7 @@ const transformClassConstructor = (context: ts.TransformationContext): ts.Transf
  */
 module.exports = function (source, map) {
   const options = this.getOptions();
+  const filePath = this.filePath();
 
   validate(schema, options, {
     name: "Widgets Loader",
@@ -203,12 +204,58 @@ module.exports = function (source, map) {
         sourceMap: true,
         module: ts.ModuleKind.CommonJS,
         jsx: ts.JsxEmit.React,
-        target: ts.ScriptTarget.ES2015,
+        target: ts.ScriptTarget.Latest,
       },
       transformers: {
         before: [transformClassConstructor],
       },
     });
+
+    const program = ts.createProgram({
+      rootNames: [filePath],
+      options: {
+        module: ts.ModuleKind.CommonJS,
+        target: ts.ScriptTarget.ES5,
+      },
+    });
+
+    const dependencies = [];
+    const sourceFile = program.getSourceFile(filePath);
+
+    if (sourceFile) {
+      ts.forEachChild(sourceFile, (node) => {
+        if (
+          ts.isImportDeclaration(node) ||
+          ts.isExportDeclaration(node) ||
+          ts.isImportEqualsDeclaration(node) ||
+          ts.isExportAssignment(node)
+        ) {
+          const moduleName = node.moduleSpecifier?.text;
+          if (moduleName) {
+            const resolvedModule = ts.resolveModuleName(
+              moduleName,
+              filePath,
+              program.getCompilerOptions(),
+              {
+                fileExists: ts.sys.fileExists,
+                readFile: ts.sys.readFile,
+              }
+            );
+            if (
+              resolvedModule.resolvedModule &&
+              resolvedModule.resolvedModule.resolvedFileName
+            ) {
+              dependencies.push(resolvedModule.resolvedModule.resolvedFileName);
+            }
+          }
+        }
+      });
+    }
+
+    dependencies.forEach((dependency) => {
+      this.addDependency(dependency);
+    });
+
     this.callback(null, outputText, sourceMapText);
     return;
   }

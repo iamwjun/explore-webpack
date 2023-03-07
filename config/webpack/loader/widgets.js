@@ -125,13 +125,14 @@ const transformClassConstructor = (context) => {
  */
 module.exports = function (source, map) {
   const options = this.getOptions();
+  const filePath = this.resourcePath
 
   validate(schema, options, {
     name: "widgets Loader",
     baseDataPath: "options",
   });
 
-  if (urlToRequest(this.resourcePath).indexOf("CompileCanvas") > -1) {
+  if (filePath.indexOf("CompileCanvas") > -1) {
     const { outputText, sourceMapText } = ts.transpileModule(source, {
       compilerOptions: {
         sourceMap: true,
@@ -143,6 +144,52 @@ module.exports = function (source, map) {
         before: [transformClassConstructor],
       },
     });
+
+    const program = ts.createProgram({
+      rootNames: [filePath],
+      options: {
+        module: ts.ModuleKind.CommonJS,
+        target: ts.ScriptTarget.ES5,
+      },
+    });
+
+    const dependencies = [];
+    const sourceFile = program.getSourceFile(filePath);
+
+    if (sourceFile) {
+      ts.forEachChild(sourceFile, (node) => {
+        if (
+          ts.isImportDeclaration(node) ||
+          ts.isExportDeclaration(node) ||
+          ts.isImportEqualsDeclaration(node) ||
+          ts.isExportAssignment(node)
+        ) {
+          const moduleName = node.moduleSpecifier?.text;
+          if (moduleName) {
+            const resolvedModule = ts.resolveModuleName(
+              moduleName,
+              filePath,
+              program.getCompilerOptions(),
+              {
+                fileExists: ts.sys.fileExists,
+                readFile: ts.sys.readFile,
+              }
+            );
+            if (
+              resolvedModule.resolvedModule &&
+              resolvedModule.resolvedModule.resolvedFileName
+            ) {
+              dependencies.push(resolvedModule.resolvedModule.resolvedFileName);
+            }
+          }
+        }
+      });
+    }
+
+    dependencies.forEach((dependency) => {
+      this.addDependency(dependency);
+    });
+
     this.callback(null, outputText, sourceMapText);
     return;
   }
